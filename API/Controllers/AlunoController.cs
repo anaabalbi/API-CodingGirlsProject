@@ -112,8 +112,20 @@ namespace API.Controllers
           {
               return Problem("Entity set 'APIContext.Aluno'  is null.");
           }
-            _context.Aluno.Add(aluno);
-            await _context.SaveChangesAsync();
+            else
+            {
+                var turma = await _context.Turma.FindAsync(aluno.TurmaID);
+                if (turma == null || turma.Ativo == false)
+                {
+                    return Content("Não foi possível cadastrar o aluno na turma selecionada, pois ela não está ativa ou não existe");
+                }
+                else
+                {
+                    _context.Aluno.Add(aluno);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            
 
             return CreatedAtAction("GetAluno", new { id = aluno.Id }, aluno);
         }
