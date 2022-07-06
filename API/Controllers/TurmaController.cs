@@ -61,7 +61,7 @@ namespace API.Controllers
 
             if (turma == null)
             {
-                return NotFound();
+                return NotFound("Não há turma relacionada a esse id.");
             }
 
             return turma;
@@ -95,7 +95,7 @@ namespace API.Controllers
                 }
             }
 
-            return NoContent();
+            return Content($"Turma atualizada com sucesso!");
         }
 
         // POST: api/Turma

@@ -61,7 +61,7 @@ namespace API.Controllers
 
             if (aluno == null)
             {
-                return NotFound();
+                return NotFound("Não há aluno relacionado a esse id.");
             }
 
             return aluno;
