@@ -77,13 +77,22 @@ namespace API.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                var turma = await _context.Turma.FindAsync(aluno.TurmaID);
+                if(turma == null || turma.Ativo==false)
+                {
+                    return Content("Não foi possível mudar o aluno de turma, pois a turma selecionada não existe ou não está ativa");
+                }
+                else
+                {
+                    await _context.SaveChangesAsync();
+                }
+               
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!AlunoExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Não há aluno correspondente a esse id");
                 }
                 else
                 {
@@ -91,7 +100,7 @@ namespace API.Controllers
                 }
             }
 
-            return NoContent();
+            return Content($"{aluno.Nome} foi atualizado com sucesso!");
         }
 
         // POST: api/Aluno
