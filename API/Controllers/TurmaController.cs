@@ -29,7 +29,24 @@ namespace API.Controllers
           {
               return NotFound();
           }
-            return await _context.Turma.ToListAsync();
+            
+                List<Turma>  turmas= await _context.Turma.ToListAsync();
+                List<Turma> turmasList = new();
+                for(int i=0; i<turmas.Count; i++)
+                {
+                    var turma = await _context.Turma.FindAsync(turmas[i].Id);
+                    if(turma != null && turma.Ativo == true)
+                    {
+                        turmasList.Add(new Turma { Id = turmas[i].Id, Nome = turmas[i].Nome, Ativo = turmas[i].Ativo });
+                    }
+                }
+                if(turmasList.Count == 0)
+                {
+                    return Content("Não há turma ativa.");
+                }
+                return turmasList;
+            
+         
         }
 
         // GET: api/Turma/5

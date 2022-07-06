@@ -27,7 +27,7 @@ namespace API.Controllers
         {
           if (_context.Aluno == null)
           {
-              return NotFound("Não há alunos ativos");
+              return NotFound();
           }
             List<Aluno> alunos = await _context.Aluno.ToListAsync();
             List<Aluno> alunosAtivos = new();
@@ -41,6 +41,10 @@ namespace API.Controllers
                     alunosAtivos.Add(new Aluno { Id = alunos[i].Id, Nome = alunos[i].Nome, DataNascimento = alunos[i].DataNascimento, Sexo = alunos[i].Sexo, TurmaID = alunos[i].TurmaID, Faltas = alunos[i].Faltas }) ;
                     }
                 }
+            }
+            if(alunosAtivos.Count == 0)
+            {
+                return Content("Não há alunos ativos.");
             }
             return alunosAtivos;
         }
