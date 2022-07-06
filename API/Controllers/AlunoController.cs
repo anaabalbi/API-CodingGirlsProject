@@ -147,7 +147,7 @@ namespace API.Controllers
             _context.Aluno.Remove(aluno);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Content("Aluno deletado com sucesso!");
         }
 
         private bool AlunoExists(int id)
