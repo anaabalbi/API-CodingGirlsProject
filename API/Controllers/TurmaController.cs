@@ -126,11 +126,28 @@ namespace API.Controllers
             {
                 return NotFound();
             }
+            List<Aluno> alunos = await _context.Aluno.ToListAsync();
+            int count = 0;
+            foreach(Aluno Aluno in alunos)
+            {
+                if (turma.Id == Aluno.TurmaID)
+                {
+                    count++;
+                }
+            }
 
-            _context.Turma.Remove(turma);
-            await _context.SaveChangesAsync();
+            if(count >0){
+                return Content("Turma não pode ser deletada por conter alunos.");
+            }
+            else
+            {
+                _context.Turma.Remove(turma);
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+            }
+
+
+            return Content("Turma deletada com sucesso!");
         }
 
         private bool TurmaExists(int id)
