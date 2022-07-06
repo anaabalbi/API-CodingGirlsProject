@@ -27,9 +27,22 @@ namespace API.Controllers
         {
           if (_context.Aluno == null)
           {
-              return NotFound();
+              return NotFound("Não há alunos ativos");
           }
-            return await _context.Aluno.ToListAsync();
+            List<Aluno> alunos = await _context.Aluno.ToListAsync();
+            List<Aluno> alunosAtivos = new();
+            for(int i =0; i<alunos.Count; i++)
+            {
+                var turma = await _context.Turma.FindAsync(alunos[i].TurmaID);
+                if(turma !=null )
+                {
+                    if (turma.Ativo == true) { 
+                
+                    alunosAtivos.Add(new Aluno { Id = alunos[i].Id, Nome = alunos[i].Nome, DataNascimento = alunos[i].DataNascimento, Sexo = alunos[i].Sexo, TurmaID = alunos[i].TurmaID, Faltas = alunos[i].Faltas }) ;
+                    }
+                }
+            }
+            return alunosAtivos;
         }
 
         // GET: api/Aluno/5
