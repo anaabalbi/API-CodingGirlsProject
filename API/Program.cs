@@ -15,7 +15,7 @@ IConfigurationRoot configuration = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddJsonFile("appsettings.json")
     .Build();
-builder.Services.AddDbContext<APIContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("Teste")));
+builder.Services.AddDbContext<APIContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("Connection")));
 
 
 var app = builder.Build();
