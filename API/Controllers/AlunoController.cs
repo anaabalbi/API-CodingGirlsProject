@@ -80,12 +80,13 @@ namespace API.Controllers
                     if (turma.Ativo)
                     {
                         await _context.SaveChangesAsync();
+                    }  
+                    else
+                    {
+                        return Content("Não foi possível mudar o aluno de turma, pois a turma selecionada não existe ou não está ativa");
                     }
                 }
-                else
-                {
-                    return Content("Não foi possível mudar o aluno de turma, pois a turma selecionada não existe ou não está ativa");
-                }
+              
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -121,13 +122,14 @@ namespace API.Controllers
                         _context.Aluno.Add(aluno);
                         await _context.SaveChangesAsync();
                     }
+                    else
+                    {
+                    return Content("Não foi possível cadastrar o aluno na turma selecionada, pois ela não está ativa ou não existe");
+                    }
 
                 }
                 
-                else
-                {
-                    return Content("Não foi possível cadastrar o aluno na turma selecionada, pois ela não está ativa ou não existe");
-                }
+                
             }
             
 
