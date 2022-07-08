@@ -14,6 +14,7 @@ namespace API.Controllers
     [ApiController]
     public class TurmaController : ControllerBase
     {
+        private Turma turma= new Turma();
         private readonly APIContext _context;
 
         public TurmaController(APIContext context)
@@ -29,22 +30,12 @@ namespace API.Controllers
           {
               return NotFound();
           }
-            
-                List<Turma>  turmas= await _context.Turma.ToListAsync();
-                List<Turma> turmasList = new();
-                for(int i=0; i<turmas.Count; i++)
-                {
-                    var turma = await _context.Turma.FindAsync(turmas[i].Id);
-                    if(turma != null && turma.Ativo == true)
-                    {
-                        turmasList.Add(new Turma { Id = turmas[i].Id, Nome = turmas[i].Nome, Ativo = turmas[i].Ativo });
-                    }
-                }
-                if(turmasList.Count == 0)
+                List<Turma>  turmas= await _context.Turma.ToListAsync();                
+                if(turma.TurmasAtivas(turmas).Count == 0)
                 {
                     return Content("Não há turma ativa.");
                 }
-                return turmasList;
+                return turma.TurmasAtivas(turmas);
             
          
         }
@@ -121,32 +112,21 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            var turma = await _context.Turma.FindAsync(id);
+            var turmaID = await _context.Turma.FindAsync(id);
             if (turma == null)
             {
                 return NotFound();
             }
             List<Aluno> alunos = await _context.Aluno.ToListAsync();
-            int count = 0;
-            foreach(Aluno Aluno in alunos)
-            {
-                if (turma.Id == Aluno.TurmaID)
-                {
-                    count++;
-                }
-            }
-
-            if(count >0){
+          
+            if(turma.TemAlunos(id, alunos)){
                 return Content("Turma não pode ser deletada por conter alunos.");
             }
             else
             {
                 _context.Turma.Remove(turma);
                 await _context.SaveChangesAsync();
-
             }
-
-
             return Content("Turma deletada com sucesso!");
         }
 
