@@ -113,20 +113,24 @@ namespace API.Controllers
                 return NotFound();
             }
             var turmaID = await _context.Turma.FindAsync(id);
-            if (turma == null)
+            if (turmaID == null)
             {
                 return NotFound();
             }
-            List<Aluno> alunos = await _context.Aluno.ToListAsync();
-          
-            if(turma.TemAlunos(id, alunos)){
-                return Content("Turma não pode ser deletada por conter alunos.");
-            }
-            else
-            {
-                _context.Turma.Remove(turma);
+            else {
+                List<Aluno> alunos = await _context.Aluno.ToListAsync();
+
+
+                if (turma.TemAlunos(turmaID.Id, alunos))
+                {
+                    return Content("Turma não pode ser deletada por conter alunos.");
+                }
+
+                _context.Turma.Remove(turmaID);
                 await _context.SaveChangesAsync();
             }
+            
+         
             return Content("Turma deletada com sucesso!");
         }
 
