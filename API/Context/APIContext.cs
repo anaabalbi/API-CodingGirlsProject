@@ -11,8 +11,8 @@ namespace API.Context
 
         }
 
-        public DbSet<Aluno>? Aluno { get; set; }
-        public DbSet<Turma>? Turma { get; set; }
+        public virtual DbSet<Aluno>? Aluno { get; set; }
+        public virtual DbSet<Turma>? Turma { get; set; }
 
 
     }
