@@ -15,11 +15,14 @@ namespace API.Controllers
     public class AlunoController : ControllerBase
     {
         private readonly APIContext _context;
+        Turma turmas = new Turma();
 
         public AlunoController(APIContext context)
         {
             _context = context;
         }
+
+     
 
         // GET: api/Aluno
         [HttpGet]
@@ -30,23 +33,13 @@ namespace API.Controllers
               return NotFound();
           }
             List<Aluno> alunos = await _context.Aluno.ToListAsync();
-            List<Aluno> alunosAtivos = new();
-            for(int i =0; i<alunos.Count; i++)
-            {
-                var turma = await _context.Turma.FindAsync(alunos[i].TurmaID);
-                if(turma !=null )
-                {
-                    if (turma.Ativo == true) { 
-                
-                    alunosAtivos.Add(new Aluno { Id = alunos[i].Id, Nome = alunos[i].Nome, DataNascimento = alunos[i].DataNascimento, Sexo = alunos[i].Sexo, TurmaID = alunos[i].TurmaID, Faltas = alunos[i].Faltas }) ;
-                    }
-                }
-            }
-            if(alunosAtivos.Count == 0)
+            List<Turma> turmas = await _context.Turma.ToListAsync();
+            Aluno aluno = new Aluno();
+            if (aluno.AlunoAtivo(alunos, turmas).Count == 0)
             {
                 return Content("Não há alunos ativos.");
             }
-            return alunosAtivos;
+            return aluno.AlunoAtivo(alunos, turmas);
         }
 
         // GET: api/Aluno/5
@@ -82,15 +75,18 @@ namespace API.Controllers
             try
             {
                 var turma = await _context.Turma.FindAsync(aluno.TurmaID);
-                if(turma == null || turma.Ativo==false)
-                {
-                    return Content("Não foi possível mudar o aluno de turma, pois a turma selecionada não existe ou não está ativa");
-                }
-                else
+
+                if (turma.Ativo)
                 {
                     await _context.SaveChangesAsync();
                 }
-               
+
+                else
+                {
+                    return Content("Não foi possível mudar o aluno de turma, pois a turma selecionada não existe ou não está ativa");
+
+
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -119,14 +115,15 @@ namespace API.Controllers
             else
             {
                 var turma = await _context.Turma.FindAsync(aluno.TurmaID);
-                if (turma == null || turma.Ativo == false)
-                {
-                    return Content("Não foi possível cadastrar o aluno na turma selecionada, pois ela não está ativa ou não existe");
-                }
-                else
+
+                if (turma.Ativo || turma== null)
                 {
                     _context.Aluno.Add(aluno);
                     await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Content("Não foi possível cadastrar o aluno na turma selecionada, pois ela não está ativa ou não existe");
                 }
             }
             
