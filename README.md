@@ -7,7 +7,8 @@
 - C#
 - SQL
 - Azure
-- Net
+- .
+Net
 
 Link da aplicação na Azure:
 ` https://api20220703160109.azurewebsites.net`
